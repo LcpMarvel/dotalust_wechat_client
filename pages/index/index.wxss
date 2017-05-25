@@ -1,0 +1,44 @@
+/**index.wxss**/
+page {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, #1D2B64, #F8CDDA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.register-section {
+  width: 85%;
+}
+
+.register-section__dota2-logo {
+  display: block;
+  margin: 0 auto 145rpx auto;
+  width: 280rpx;
+  height: 280rpx;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.register-from__account-id {
+  height: 95rpx;
+  font-size: 36rpx;
+  background-color: rgba(239, 239, 244, 1);
+  border-radius: 10rpx;
+  margin: 0 30rpx 40rpx 30rpx;
+  text-align: center;
+}
+
+.register-from__submit-button {
+  height: 95rpx;
+  margin: 0 30rpx;
+  background-color: #C63939;
+  color: #FFFFFF;
+}
