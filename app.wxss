@@ -1,0 +1,5 @@
+page {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, #1D2B64, #F8CDDA);
+}

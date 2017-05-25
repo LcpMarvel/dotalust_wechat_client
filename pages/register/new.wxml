@@ -1,0 +1,18 @@
+<view class="register-page">
+  <view class="register-section">
+    <image 
+src="http://osr3pl3q8.bkt.clouddn.com/dota2-logo.png" class="register-section__dota2-logo"></image>
+    <form bindsubmit="formSubmit" class="register-form">
+      <input name="accountId"
+             placeholder="请输入Steam帐号"
+             placeholder-style="color:#B2B2B2"
+             class="register-from__account-id"/>
+
+      <button formType="submit"
+              class="register-from__submit-button">
+        搜索并绑定
+      </button>
+    </form>
+  </view>
+</view>
+
