@@ -1,10 +1,10 @@
 <view class="person">
   <view class="person__info">
-    <image src="http://osr3pl3q8.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%A4%B4%E5%83%8F.jpg" class="person__info__avatar"></image>
-    <text class="person__info__name">用户名</text>
+    <image src="{{avatars.medium}}" class="person__info__avatar"></image>
+    <text class="person__info__name">{{displayName}}</text>
     <view class="person__info__id">
       <text class="title">ID: </text>
-      <text class="value">275477134</text>
+      <text class="value">{{accountId}}</text>
     </view>
   </view>
 
@@ -14,54 +14,54 @@
     <view class="person__summary__container">
       <view class="winning-percentage-and-kda">
         <view class="winning-percentage item">
-          <text class="value">99.99%</text>
+          <text class="value">{{summary.winningPercentage}}%</text>
           <text class="title">天梯胜率</text>
         </view>
 
         <view class="kda item">
-          <text class="value">12.3</text>
+          <text class="value">{{summary.kdaAvg}}</text>
           <text class="title">KDA</text>
         </view>
       </view>
 
       <view class="others">
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.killsCountAvg}}</text>
           <text class="title">场均击杀</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.deathsCountAvg}}</text>
           <text class="title">场均死亡</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.assistsCountAvg}}</text>
           <text class="title">场均助攻</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.goldPerMinuteAvg}}</text>
           <text class="title">场均GPM</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.heroHealingAvg}}</text>
           <text class="title">场均治疗</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.heroDamageAvg}}</text>
           <text class="title">场均伤害</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.lastHitsCountAvg}}</text>
           <text class="title">场均补刀</text>
         </view>
 
         <view class="item">
-          <text class="value">99.9</text>
+          <text class="value">{{summary.experiencePerMinuteAvg}}</text>
           <text class="title">场均XPM</text>
         </view>
       </view>

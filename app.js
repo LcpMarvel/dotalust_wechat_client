@@ -4,22 +4,13 @@ App({
   serverHost: function () {
     return 'https://dotalust_dev.com'
   },
+  globalData: {
+    userInfo: null,
+    sessionData: null
+  },
   onLaunch: function () {
-    this.checkSession()
   },
-  checkSession: function() {
-    var app = this
-
-    wx.checkSession({
-      success: function () {
-        app.setSession()
-      },
-      fail: function () {
-        app.login()
-      }
-    })
-  },
-  login: function () {
+  login: function (request_function) {
     var app = this
 
     wx.login({
@@ -36,36 +27,16 @@ App({
             app.globalData.sessionData = data
 
             wx.setStorage({
-              key: 'session',
+              key: "session",
               data: data
             })
 
+            app.redirectToRegisterPageIfNotBound()
             app.updateUserInfo()
 
-            app.redirectToRegisterPageIfNotBound()
+            request_function()
           }
         })
-      }
-    })
-  },
-  setSession: function() {
-    var app = this
-
-    wx.getStorage({
-      key: 'session',
-      success: function (res) {
-        var data = res.data
-
-        if (data) {
-          app.globalData.sessionData = data
-
-          app.redirectToRegisterPageIfNotBound()
-        } else {
-          app.login()
-        }
-      },
-      fail: function (res) {
-        app.login()
       }
     })
   },
@@ -107,10 +78,6 @@ App({
       }
     })
   },
-  globalData:{
-    userInfo: null,
-    sessionData: null
-  },
   userToken: function() {
     return this.globalData.sessionData.token;
   },
@@ -123,5 +90,32 @@ App({
         url: 'pages/register/new'
       })
     }
+  },
+  auth_request: function(request_function) {
+    var app = this
+
+    wx.checkSession({
+      success: function () {
+        var sessionData = app.globalData.sessionData
+
+        if (!sessionData) {
+          wx.getStorage({
+            key: 'session',
+            success: function (res) {
+              sessionData = res.data
+              app.globalData.sessionData = sessionData
+
+              request_function()
+            },
+            fail: function() {
+              app.login(request_function)
+            }
+          })
+        }
+      },
+      fail: function () {
+        app.login(request_function)
+      }
+    })
   }
 })

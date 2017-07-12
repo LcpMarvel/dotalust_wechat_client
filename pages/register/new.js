@@ -20,7 +20,11 @@ Page({
         console.log(e)
       },
       success: function (response) {
-        console.log(response)
+        var data = response.data;
+
+        wx.navigateTo({
+          url: 'pages/index/index?id=' + data.id
+        })
       }
     })
   },
