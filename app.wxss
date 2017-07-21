@@ -1,5 +1,16 @@
+@import 'components/wux.wxss';
+@import 'assets/styles/weui.wxss';
+@import 'assets/styles/skyvow.wxss';
+
 page {
   height: 100%;
   width: 100%;
   background: linear-gradient(to bottom, #1D2B64, #F8CDDA);
+  line-height: normal;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
 }

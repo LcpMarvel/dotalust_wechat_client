@@ -6,11 +6,13 @@
 }
 
 .person__info {
-  margin: 40rpx auto 0 auto;
+  margin: 0 auto;
   text-align: center;
   color: #FFFFFF;
   width: 100%;
   font-weight: normal;
+  position:relative;
+  top: 40rpx;
 }
 
 .person__info__avatar {
@@ -31,7 +33,7 @@
 
 .person__info__id {
   display: block;
-  margin-top: 10px;
+  margin: 5px 0;
   font-size: 28rpx;
 }
 
@@ -112,4 +114,12 @@ button.share-personal-summary {
   background-color: #C63939;
   color: #FFFFFF;
   width: 76%;
+}
+
+.person__summary .switch-steam-account {
+  text-align: center;
+  display: block;
+  font-size: 26rpx;
+  color: #576B95;
+  margin-top: 30rpx;
 }

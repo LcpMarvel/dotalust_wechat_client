@@ -1,9 +1,13 @@
+import { $wuxRefresher } from '../../components/wux'
+import Request from '../../utils/request'
+
 var app = getApp()
 
 Page({
   data: {
-    accountId: null,
-    displayName: null,
+    id: null,
+    accountId: '暂无',
+    displayName: '获取中...',
     avatars: {},
     createdAt: null,
     default: true,
@@ -23,67 +27,82 @@ Page({
     }
   },
 
-  onLoad: function (options) {
+  setupRefresher() {
+    this.refresher = new $wuxRefresher({
+      onPulling: () => {
+        console.log('onPulling')
+      },
+      onRefresh: () => {
+        app.refreshData(this.data.id, () => {
+          // page.events.emit(`scroll.refreshComplete`)
+
+          wx.redirectTo({
+            url: `/pages/loading/index?channel=account_sync:${this.data.id}`,
+          })
+        })
+      }
+    })
+  },
+
+  onLoad(options) {
     if (options.id) {
       this.setData({
         id: options.id
       })
     }
 
-    app.auth_request(this.fetch_summary);
+    this.setupRefresher()
   },
-
-  onReady: function () {
-
+  touchstart(e) {
+    this.refresher.touchstart(e)
   },
-
-  onShow: function () {
-
+  touchmove(e) {
+    this.refresher.touchmove(e)
   },
-
-  onHide: function () {
-
+  touchend(e) {
+    this.refresher.touchend(e)
   },
-
-  onUnload: function () {
+  onReady() {
 
   },
 
-  onPullDownRefresh: function () {
+  onShow() {
+    this.fetch_summary()
+  },
+
+  onHide() {
 
   },
 
-  onReachBottom: function () {
+  onUnload() {
 
   },
 
-  onShareAppMessage: function () {
+  onPullDownRefresh() {
 
   },
 
-  fetch_summary: function() {
-    var page = this;
+  onReachBottom() {
 
-    var url = app.serverHost() + '/api/wechat/steam_account/summary'
+  },
 
-    if (page.data.id) {
-      url = app.serverHost() + '/api/wechat/steam_accounts/' + page.data.id + '/summary'
+  onShareAppMessage() {
+
+  },
+
+  fetch_summary() {
+    let url = '/api/wechat/steam_account/summary'
+
+    if (this.data.id) {
+      url = `/api/wechat/steam_accounts/${this.data.id}/summary`
     }
 
-    wx.request({
+    Request.authSend(app.authentication, {
       url: url,
-      method: 'GET',
-      header: {
-        'token': app.userToken()
-      },
-      fail: function (e) {
-        console.log(e)
-      },
-      success: function (response) {
-        var data = response.data;
+      success: (data) => {
         var summary = data.summary;
 
-        page.setData({
+        this.setData({
           id: data.id,
           accountId: data.account_id,
           displayName: data.display_name,

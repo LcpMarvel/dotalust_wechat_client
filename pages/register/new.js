@@ -1,39 +1,45 @@
+import Request from '../../utils/request'
+import { $wuxDialog } from '../../components/wux'
+
 var app = getApp()
 
 Page({
   data: {
     userInfo: {}
   },
-  formSubmit: function (e) {
-    var params = e.detail.value
 
-    wx.request({
-      url: app.serverHost() + '/api/wechat/steam_accounts',
+  formSubmit(e) {
+    this.submitRequest(e.detail.value)
+  },
+
+  submitRequest(params) {
+    Request.authSend(app.authentication, {
+      url: '/api/wechat/steam_accounts',
       method: 'POST',
-      header: {
-        'token': app.userToken()
-      },
       data: {
         account_id: params.accountId
       },
-      fail: function (e) {
-        console.log(e)
-      },
-      success: function (response) {
-        var data = response.data;
+      success: (data, response) => {
+        console.log(response)
+        if (response.statusCode == 200) {
+          app.changeBound(true)
 
-        wx.navigateTo({
-          url: 'pages/index/index?id=' + data.id
-        })
+          wx.redirectTo({
+            url: `/pages/loading/index?channel=account_sync:${data.id}`
+          })
+        } else if (response.statusCode == 422) {
+          $wuxDialog.alert({
+            title: data,
+            content: ''
+          })
+        }
       }
     })
   },
-  onLoad: function () {
-    var that = this
 
-    app.getUserInfo(function (userInfo) {
-      //更新数据
-      that.setData({
+  onLoad() {
+    app.getUserInfo((userInfo) => {
+      this.setData({
         userInfo: userInfo
       })
     })

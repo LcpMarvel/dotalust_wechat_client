@@ -1,3 +1,7 @@
+<import src="../../components/dialog/dialog.wxml"/>
+
+<template is="dialog" data="{{ ...$wux.dialog }}"/>
+
 <view class="register-page">
   <view class="register-section">
     <image 

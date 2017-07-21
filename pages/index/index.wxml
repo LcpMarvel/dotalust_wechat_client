@@ -1,10 +1,14 @@
-<view class="person">
+<import src="../../components/refresher/refresher.wxml"/>
+
+<view class="person" style="position: absolute; height: 100%; {{ $wux.refresher.style }}" bindtouchstart="touchstart" bindtouchmove="touchmove" bindtouchend="touchend">
+  <template is="refresher" data="{{ ...$wux.refresher }}"/>
+
   <view class="person__info">
     <image src="{{avatars.medium}}" class="person__info__avatar"></image>
     <text class="person__info__name">{{displayName}}</text>
     <view class="person__info__id">
       <text class="title">ID: </text>
-      <text class="value">{{accountId}}</text>
+      <text class="value" decode="true"> {{accountId}}</text>
     </view>
   </view>
 
@@ -68,5 +72,9 @@
     </view>
 
     <button class="share-personal-summary">转发到微信群, 与好友PK</button>
+
+    <navigator url="/pages/steam_account/index">
+      <text class="switch-steam-account">切换Steam帐号</text>
+    </navigator>
   </view>
 </view>

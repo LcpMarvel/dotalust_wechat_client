@@ -1,121 +1,86 @@
-//app.js
+import { Websocket } from './utils/websocket'
+import Authentication from './utils/authentication'
+import Request from './utils/request'
 
 App({
-  serverHost: function () {
-    return 'https://dotalust_dev.com'
-  },
   globalData: {
     userInfo: null,
-    sessionData: null
   },
-  onLaunch: function () {
-  },
-  login: function (request_function) {
-    var app = this
 
-    wx.login({
-      success: function (res) {
-        wx.request({
-          url: app.serverHost() + '/api/wechat/login',
-          method: 'POST',
-          data: {
-            code: res.code
-          },
-          success: function (response) {
-            var data = response.data;
+  onLaunch() {
+    this.websocket = new Websocket(`${Request.serverHost('wss')}/socket`)
+    this.websocket.connect()
 
-            app.globalData.sessionData = data
+    this.authentication = new Authentication
+    this.authentication.checkSession(() => {
+      this.updateUserInfo()
+    })
 
-            wx.setStorage({
-              key: "session",
-              data: data
-            })
-
-            app.redirectToRegisterPageIfNotBound()
-            app.updateUserInfo()
-
-            request_function()
-          }
+    this.authentication.executeAuthTask((session) => {
+      if (!session.steamIdBound) {
+        wx.redirectTo({
+          url: '/pages/register/new'
         })
       }
     })
   },
-  getUserInfo: function(cb) {
-    var app = this;
 
+  getUserInfo(callback) {
     if (this.globalData.userInfo) {
       return this.globalData.userInfo
     } else {
       wx.getUserInfo({
-        success: function (data) {
-          app.globalData.userInfo = data.userInfo
+        success: (data) => {
+          this.globalData.userInfo = data.userInfo
 
-          typeof cb == "function" && cb(data.userInfo)
+          callback(data.userInfo, data)
         }
       })
     }
   },
-  updateUserInfo: function() {
-    var app = this;
 
-    wx.getUserInfo({
-      success: function (data) {
-        var userInfo = data.userInfo
-
-        wx.request({
-          url: app.serverHost() + '/api/wechat/user',
-          data: {
-            encrypted_data: data.encryptedData,
-            iv: data.iv,
-            raw_data: data.rawData,
-            signature: data.signature
-          },
-          header: {
-            'token': app.userToken()
-          },
-          method: 'PUT'
-        })
-      }
+  updateUserInfo() {
+    this.getUserInfo((_userInfo, data) => {
+      Request.authSend(this.authentication, {
+        url: '/api/wechat/user',
+        data: {
+          encrypted_data: data.encryptedData,
+          iv: data.iv,
+          raw_data: data.rawData,
+          signature: data.signature
+        },
+        method: 'PUT'
+      })
     })
   },
-  userToken: function() {
-    return this.globalData.sessionData.token;
+
+  refreshData(id, callback) {
+    Request.authSend(this.authentication, {
+      url: `/api/wechat/steam_accounts/${id}/refresh`,
+      method: 'POST',
+      success: (data) => { callback(data) }
+    })
   },
-  steamIdBound: function() {
-    return this.globalData.sessionData.steam_id_bound;
+
+  changeBound(bound) {
+    let callback = (session) => {
+      if (!session.steamIdBound) {
+        this.toRegisterPage(true)
+      }
+    }
+
+    this.authentication.changeBound(bound, callback)
   },
-  redirectToRegisterPageIfNotBound: function() {
-    if (!this.steamIdBound()) {
+
+  toRegisterPage(byRedirect) {
+    if (byRedirect) {
       wx.redirectTo({
-        url: 'pages/register/new'
+        url: '/pages/register/new',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/register/new'
       })
     }
   },
-  auth_request: function(request_function) {
-    var app = this
-
-    wx.checkSession({
-      success: function () {
-        var sessionData = app.globalData.sessionData
-
-        if (!sessionData) {
-          wx.getStorage({
-            key: 'session',
-            success: function (res) {
-              sessionData = res.data
-              app.globalData.sessionData = sessionData
-
-              request_function()
-            },
-            fail: function() {
-              app.login(request_function)
-            }
-          })
-        }
-      },
-      fail: function () {
-        app.login(request_function)
-      }
-    })
-  }
 })

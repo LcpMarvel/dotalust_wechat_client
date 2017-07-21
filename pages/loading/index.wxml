@@ -1,0 +1,15 @@
+<import src="../../components/dialog/dialog.wxml"/>
+
+<template is="dialog" data="{{ ...$wux.dialog }}"/>
+
+<view class="loading">
+  <image src="../../assets/images/tiny.png" class="hero-image"></image>
+
+  <view class="progress">
+    <image src="../../assets/images/progress-frame.png"></image>
+
+    <view class="content">
+      <view class="line" style="width: {{percent}}%"></view>
+    </view>
+  </view>
+</view>

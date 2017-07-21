@@ -1,0 +1,44 @@
+.loading {
+  width: 100%;
+  height: 100%;
+}
+
+.loading .hero-image {
+  width: 500rpx;
+  height: 340rpx;
+  margin: 0 auto;
+  margin-bottom: 70rpx;
+  padding-top: 200rpx;
+  display: block;
+}
+
+.loading .progress {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 52rpx;
+  justify-content: center;
+}
+
+.loading .progress image {
+  width: 500rpx;
+  height: 50rpx;
+  display: block;
+  margin: 0 auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.loading .progress .content {
+  width: 475rpx;
+  height: 50%;
+  border-radius: 50rpx;
+}
+
+.loading .progress .line {
+  width: 100%;
+  height: 100%;
+  border-radius: 50rpx;
+  background-color: #48C0BD;
+}
