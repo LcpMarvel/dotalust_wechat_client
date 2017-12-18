@@ -5,6 +5,7 @@ var app = getApp()
 
 Page({
   data: {
+    urlId: null,
     id: null,
     accountId: '暂无',
     displayName: '获取中...',
@@ -47,7 +48,7 @@ Page({
   onLoad(options) {
     if (options.id) {
       this.setData({
-        id: options.id
+        urlId: options.id
       })
     }
 
@@ -93,9 +94,13 @@ Page({
   fetch_summary() {
     let url = '/api/wechat/steam_account/summary'
 
-    if (this.data.id) {
-      url = `/api/wechat/steam_accounts/${this.data.id}/summary`
+    if (this.data.urlId) {
+      url = `/api/wechat/steam_accounts/${this.data.urlId}/summary`
     }
+
+    this.setData({
+      urlId: null
+    })
 
     Request.authSend(app.authentication, {
       url: url,

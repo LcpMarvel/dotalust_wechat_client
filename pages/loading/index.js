@@ -5,6 +5,7 @@ var app = getApp()
 Page({
   data: {
     percent: 0,
+    showingDialog: false,
     redirectPage: null
   },
 
@@ -33,12 +34,21 @@ Page({
   },
 
   setPercent(percent) {
-    this.setData({
-      percent: percent
-    })
+    if (this.data.showingDialog) {
+      return 
+    }
 
     if (percent >= 100) {
+      this.setData({
+        showingDialog: true,
+        percent: 100
+      })
+
       this.redirectToPage()
+    } else {
+      this.setData({
+        percent: percent
+      })
     }
   },
 
@@ -65,6 +75,7 @@ Page({
   },
 
   onShow: function () {
+    wx.hideShareMenu()
   },
 
   onHide: function () {
@@ -82,10 +93,4 @@ Page({
   onReachBottom: function () {
   
   },
-
-  onShareAppMessage: function () {
-
-  },
-
-
 })

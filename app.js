@@ -4,10 +4,15 @@ import Request from './utils/request'
 
 App({
   globalData: {
+    groupId: null,
     userInfo: null,
   },
 
-  onLaunch() {
+  launchOptions: null,
+
+  onLaunch(options) {
+    this.launchOptions = options
+
     this.websocket = new Websocket(`${Request.serverHost('wss')}/socket`)
     this.websocket.connect()
 
@@ -16,13 +21,19 @@ App({
       this.updateUserInfo()
     })
 
+    this.handleShareInfo()
+
     this.authentication.executeAuthTask((session) => {
       if (!session.steamIdBound) {
         wx.redirectTo({
-          url: '/pages/register/new'
+          url: '/pages/steam_account/new'
         })
       }
     })
+
+    // wx.redirectTo({
+    //   url: "/pages/index/group_ranking",
+    // })
   },
 
   getUserInfo(callback) {
@@ -39,6 +50,46 @@ App({
     }
   },
 
+  handleShareInfo() {
+    if (this.launchOptions.scene == 1044) {
+      wx.getShareInfo({
+        shareTicket: this.launchOptions.shareTicket,
+        success: ({ encryptedData, iv }) => {
+          this.authentication.upsertGroupId(encryptedData, iv)
+
+          this.authentication.executeGroupAuthTask(({ groupId }) => {
+            wx.redirectTo({
+              url: `/pages/index/group_ranking?group_id=${groupId}`
+            })
+          })
+        }
+      })
+    }
+  },
+
+  changeBound(bound) {
+    let callback = (session) => {
+      if (!session.steamIdBound) {
+        this.toRegisterPage(true)
+      }
+    }
+
+    this.authentication.changeBound(bound, callback)
+  },
+
+  toRegisterPage(byRedirect) {
+    if (byRedirect) {
+      wx.redirectTo({
+        url: '/pages/steam_account/new',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/steam_account/new'
+      })
+    }
+  },
+
+  // Server requests
   updateUserInfo() {
     this.getUserInfo((_userInfo, data) => {
       Request.authSend(this.authentication, {
@@ -60,27 +111,5 @@ App({
       method: 'POST',
       success: (data) => { callback(data) }
     })
-  },
-
-  changeBound(bound) {
-    let callback = (session) => {
-      if (!session.steamIdBound) {
-        this.toRegisterPage(true)
-      }
-    }
-
-    this.authentication.changeBound(bound, callback)
-  },
-
-  toRegisterPage(byRedirect) {
-    if (byRedirect) {
-      wx.redirectTo({
-        url: '/pages/register/new',
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/register/new'
-      })
-    }
-  },
+  }
 })

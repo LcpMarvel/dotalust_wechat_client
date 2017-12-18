@@ -11,10 +11,14 @@ Page({
 
   onLoad(options) {
     this.fetchSteamAccounts()
+
+    wx.setNavigationBarTitle({
+      title: 'Steam 帐号管理'
+    })
   },
 
   onReady() {
-  
+    wx.hideShareMenu()
   },
 
   onShow() {
@@ -34,10 +38,6 @@ Page({
   },
 
   onReachBottom() {
-  
-  },
-
-  onShareAppMessage() {
   
   },
 

@@ -6,6 +6,7 @@ export default class Authentication {
     this.session = null
     this.sessionLocalStorageKey = opts.sessionLocalStorageKey || 'session'
     this.pendingTasks = []
+    this.pendingGroupTasks = []
   }
 
   checkSession(successCallback) {
@@ -22,6 +23,14 @@ export default class Authentication {
       callback(this.session)
     } else {
       this.pendingTasks.push(callback)
+    }
+  }
+
+  executeGroupAuthTask(callback) {
+    if (this.session && this.session.groupId) {
+      callback(this.session)
+    } else {
+      this.pendingGroupTasks.push(callback)
     }
   }
 
@@ -108,6 +117,22 @@ export default class Authentication {
       },
       fail: () => {
         console.log("Can't get session data from server.")
+      }
+    })
+  }
+
+  upsertGroupId(encryptedData, iv) {
+    Request.authSend(this, {
+      url: '/api/wechat/users_groups',
+      method: 'POST',
+      data: {
+        encrypted_data: encryptedData,
+        iv: iv
+      },
+      success: (data) => {
+        this.session.groupId = data.group_id
+
+        this.pendingGroupTasks.forEach(c => c(this.session))
       }
     })
   }

@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/register/new",
+    "pages/index/group_ranking",
+    "pages/steam_account/new",
     "pages/steam_account/index",
     "pages/loading/index"
   ],
